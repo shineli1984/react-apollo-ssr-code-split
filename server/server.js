@@ -14,13 +14,15 @@ import { NOT_FOUND } from 'redux-first-router'
 export default (event, context, callback) => {
   const request = event.Records[0].cf.request
   const path = request.uri
+  const querystring = request.querystring
+  const url = path + '?' + querystring
 
   if (path.indexOf('.') > 0) {
     return callback(null, request)
   }
 
   const preLoadedState = {} // onBeforeChange will authenticate using this
-  const history = createHistory({ initialEntries: [path] })
+  const history = createHistory({ initialEntries: [url] })
   const { store, thunk } = configureStore(history, preLoadedState)
 
   let location = store.getState().location
