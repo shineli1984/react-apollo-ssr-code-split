@@ -1,10 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { ApolloProvider } from 'react-apollo'
 import { Provider } from 'react-redux'
 import createHistory from 'history/createBrowserHistory'
 import AppContainer from 'react-hot-loader/lib/AppContainer'
 import App from './components/App'
 import configureStore from './configureStore'
+import getClient from './apollo/getClient'
 
 const history = createHistory()
 const { store } = configureStore(history, window.REDUX_STATE)
@@ -15,7 +17,9 @@ const render = App => {
   ReactDOM.hydrate(
     <AppContainer>
       <Provider store={store}>
-        <App />
+        <ApolloProvider client={getClient(false)}>
+          <App />
+        </ApolloProvider>
       </Provider>
     </AppContainer>,
     root

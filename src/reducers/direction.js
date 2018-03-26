@@ -12,25 +12,9 @@ export default (state = 'next', action = {}) => {
   if (type === 'HOME') {
     return 'back'
   }
-  else if (type === 'LIST' && prevType === 'HOME') {
+  if (prevType === 'HOME') {
     return 'next'
   }
-  else if (type === 'LIST' && prevType === 'VIDEO') {
-    return 'back'
-  }
-  else if (type === 'LIST' && prevType === 'PLAY') {
-    return 'back'
-  }
-  else if (type === 'VIDEO' && prevType === 'LIST') {
-    return 'next'
-  }
-  else if (type === 'LOGIN') {
-    return 'back'
-  }
-  else if (type === 'ADMIN') {
-    return 'next'
-  }
-
   return state
 }
 

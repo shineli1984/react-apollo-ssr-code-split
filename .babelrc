@@ -6,13 +6,19 @@
   ],
   
   "plugins": [
-    "universal-import"
+    "universal-import",
+    "ramda"
   ],
   
   "env": {
     "development": {
       "plugins": [
         "react-hot-loader/babel"
+      ]
+    },
+    "test": {
+      "plugins": [
+        "dynamic-import-node"
       ]
     }
   }

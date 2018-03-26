@@ -10,34 +10,70 @@
     "start:prod": "npm run build && npm run serve",
     "serve": "cross-env NODE_ENV=production node buildServer/index.js",
     "build": "npm run build:client && npm run build:server && npm run build:node",
-    "build:client": "rimraf buildClient && cross-env NODE_ENV=production webpack --progress -p --config webpack/client.prod.js",
-    "build:server": "rimraf buildServer && cross-env NODE_ENV=production webpack --progress -p --config webpack/server.prod.js",
+    "build:client": "rimraf buildClient && cross-env NODE_ENV=production webpack --progress -p --config config/webpack/client.prod.js",
+    "build:server": "rimraf buildServer && cross-env NODE_ENV=production webpack --progress -p --config config/webpack/server.prod.js",
     "build:node": "cross-env NODE_ENV=production babel server -d buildServer --ignore configureStore,render",
     "clean": "rimraf buildClient buildServer",
     "precommit": "lint-staged",
     "cm": "git-cz",
     "lint": "eslint --fix src server webpack",
-    "format": "prettier --single-quote --semi=false --write '{src,server,webpack}/**/*.js' && npm run lint"
+    "format": "prettier --single-quote --semi=false --write '{src,server,webpack}/**/*.js' && npm run lint",
+    "test": "node ./scripts/test --env=jsdom",
+    "test:generate-output": "node ./scripts/test --env=jsdom --json --outputFile=.jest-test-results.json",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "aphrodite": "^2.1.0",
+    "apollo-cache-inmemory": "^1.1.11",
+    "apollo-client": "^2.2.7",
+    "apollo-link": "^1.2.1",
+    "apollo-link-http": "^1.5.3",
+    "apollo-link-state": "^0.4.1",
+    "autoprefixer": "^8.1.0",
+    "babel-jest": "^22.4.1",
+    "babel-plugin-dynamic-import-node": "^1.2.0",
+    "babel-plugin-ramda": "^1.5.0",
     "babel-polyfill": "^6.23.0",
     "cookie-parser": "^1.4.3",
+    "dotenv": "^5.0.1",
+    "dotenv-expand": "^4.2.0",
     "express": "^4.15.2",
     "fetch-everywhere": "^1.0.5",
+    "graphql": "^0.13.2",
+    "graphql-anywhere": "^4.1.7",
+    "graphql-tag": "^2.8.0",
     "history": "^4.6.3",
+    "lodash.merge": "^4.6.1",
+    "postcss-flexbugs-fixes": "^3.3.0",
+    "postcss-loader": "^2.1.1",
+    "raf": "^3.4.0",
+    "ramda": "^0.25.0",
     "react": "^16.0.0",
+    "react-apollo": "^2.0.4",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.5",
-    "react-universal-component": "^2.5.0",
+    "react-universal-component": "2.8.4",
+    "recompose": "^0.26.0",
     "redux": "^3.7.0",
     "redux-devtools-extension": "^2.13.2",
     "redux-first-router": "^1.9.15",
     "redux-first-router-link": "^1.1.4",
     "reselect": "^3.0.1",
+    "serverless": "^1.26.1",
+    "serverless-webpack": "^5.1.0",
     "transition-group": "^0.0.2",
     "webpack-flush-chunks": "^1.1.22"
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^3.3.15",
+    "@storybook/addon-info": "^3.3.15",
+    "@storybook/addon-jest": "^3.3.15",
+    "@storybook/addon-knobs": "^3.3.15",
+    "@storybook/addon-links": "^3.3.15",
+    "@storybook/addon-storyshots": "^3.3.15",
+    "@storybook/addons": "^3.3.15",
+    "@storybook/react": "^3.3.15",
     "autodll-webpack-plugin": "^0.3.4",
     "babel-cli": "^6.24.0",
     "babel-core": "^6.24.0",
@@ -62,14 +98,17 @@
     "extract-css-chunks-webpack-plugin": "^2.0.15",
     "flow-bin": "^0.57.2",
     "husky": "^0.14.3",
-    "jest": "^21.2.1",
+    "jest": "^22.4.2",
     "lint-staged": "^4.2.3",
     "prettier": "^1.4.4",
     "react-hot-loader": "^3.0.0",
+    "react-test-renderer": "^16.2.0",
     "rimraf": "^2.6.1",
+    "serverless-plugin-cloudfront-lambda-edge": "^1.0.0",
     "stats-webpack-plugin": "^0.6.1",
     "travis-github-status": "^1.4.0",
     "webpack": "^3.5.4",
+    "webpack-dashboard": "^1.1.1",
     "webpack-dev-middleware": "^1.12.0",
     "webpack-hot-middleware": "^2.18.2",
     "webpack-hot-server-middleware": "^0.1.0",
@@ -84,9 +123,42 @@
     "linters": {
       "*.js": [
         "prettier --single-quote --semi=false --write",
-        "eslint --fix",
         "git add"
       ]
     }
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,mjs}"
+    ],
+    "setupFiles": [
+      "<rootDir>/config/polyfills.js"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs}",
+      "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs}"
+    ],
+    "testEnvironment": "node",
+    "testURL": "http://localhost",
+    "transform": {
+      "^.+\\.(js|jsx|mjs)$": "<rootDir>/node_modules/babel-jest",
+      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+      "^(?!.*\\.(js|jsx|mjs|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
+    ],
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web"
+    },
+    "moduleFileExtensions": [
+      "web.js",
+      "mjs",
+      "js",
+      "json",
+      "web.jsx",
+      "jsx",
+      "node"
+    ]
   }
 }

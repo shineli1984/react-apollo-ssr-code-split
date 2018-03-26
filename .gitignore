@@ -1,3 +1,5 @@
+.jest-test-results.json
+.idea
 node_modules
 *.log
 buildClient

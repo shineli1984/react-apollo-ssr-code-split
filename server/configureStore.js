@@ -5,6 +5,7 @@ import configureStore from '../src/configureStore'
 export default async (req, res) => {
   const jwToken = req.cookies.jwToken // see server/index.js to change jwToken
   const preLoadedState = { jwToken } // onBeforeChange will authenticate using this
+  // const preLoadedState = { } // onBeforeChange will authenticate using this
 
   const history = createHistory({ initialEntries: [req.path] })
   const { store, thunk } = configureStore(history, preLoadedState)

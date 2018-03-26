@@ -2,8 +2,8 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProduction'
 import { connectRoutes } from 'redux-first-router'
 
-import routesMap from './routesMap'
-import options from './options'
+import routesMap from './routing/routesMap'
+import options from './routing/options'
 import * as reducers from './reducers'
 import * as actionCreators from './actions'
 
